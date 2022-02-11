@@ -13,7 +13,6 @@ class View
 
     public function renderHtml(string $templateName, array $vars = [], int $code = 200)
     {
-        http_response_code($code);
         extract($vars); //преобразует массив в переменные
 
         ob_start();
@@ -21,6 +20,7 @@ class View
         $buffer = ob_get_contents();
         ob_end_clean();
 
-        echo $buffer;
+        http_response_code($code); //передаём код ответа
+        echo $buffer; //выводим на экран
     }
 }

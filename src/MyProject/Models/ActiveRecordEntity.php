@@ -23,11 +23,6 @@ abstract class ActiveRecordEntity
         $this->$camelCaseName = $value;
     }
  
-    private function underscoreToCamelCase(string $source): string
-    {
-        return lcfirst(str_replace('_', '', ucwords($source, '_')));
-    }
- 
     /**
     * @return static[]
     */
@@ -47,6 +42,11 @@ abstract class ActiveRecordEntity
         $entities = $db->query('SELECT * FROM `' . static::getTableName() . '` WHERE id = :id;', ['id' => $id], static::class);
 
         return $entities ? $entities[0] : null;
+    }
+
+    private function underscoreToCamelCase(string $source): string
+    {
+        return lcfirst(str_replace('_', '', ucwords($source, '_')));
     }
  
     abstract protected static function getTableName(): string;
