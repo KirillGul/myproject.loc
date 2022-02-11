@@ -23,9 +23,6 @@ class MainController
     public function main(): void
     {     
         $articles = $this->db->query('SELECT * FROM `articles`;', [], Article::class);
-        var_dump($articles);
-        return;
-
         $this->view->renderHtml('main/main.php', ['articles' => $articles]);
     }
 
@@ -33,10 +30,5 @@ class MainController
     {
 
         $this->view->renderHtml('main/hello.php', ['name' => $name, 'title' => 'Страница преветсвия']);
-    }
-
-    public function sayBye(string $name): void
-    {
-        echo "Пока, ". $name;
     }
 }
