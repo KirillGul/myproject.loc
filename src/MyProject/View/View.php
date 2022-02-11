@@ -11,7 +11,7 @@ class View
         $this->templatesPath = $templatesPath;
     }
 
-    public function renderHtml(string $templateName, array $vars = [])
+    public function renderHtml(string $templateName, array $vars = [], int $code = 200)
     {
         extract($vars); //преобразует массив в переменные
 
@@ -20,6 +20,7 @@ class View
         $buffer = ob_get_contents();
         ob_end_clean();
 
-        echo $buffer;
+        http_response_code($code); //передаём код ответа
+        echo $buffer; //выводим на экран
     }
 }
