@@ -2,55 +2,43 @@
 
 namespace MyProject\Models\Users;
 
-class User
+use MyProject\Models\ActiveRecordEntity;
+
+class User extends ActiveRecordEntity
 {
-    /** @var int */
-    private $id;
+    /** @var string */
+    protected $nickname;
 
     /** @var string */
-    private $nickname;
-
-    /** @var string */
-    private $email;
+    protected $email;
 
     /** @var int */
-    private $isConfirmed;
+    protected $isConfirmed;
 
     /** @var string */
-    private $role;
+    protected $role;
 
     /** @var string */
-    private $passwordHash;
+    protected $passwordHash;
 
     /** @var string */
-    private $authToken;
+    protected $authToken;
 
     /** @var string */
-    private $createdAt;
+    protected $createdAt;
 
     /*public function __construct(string $name)
     {
         $this->name = $name;
     }*/
 
-    public function __set($name, $value): void
-    {
-        $camelCaseName = $this->underscoreToCamelCase($name);
-        $this->$camelCaseName = $value;
-    }
-
-    public function getId(): int
-    {
-        return $this->id;
-    }
-
     public function getNickname(): string
     {
         return $this->nickname;
     }
 
-    private function underscoreToCamelCase(string $name): string
+    protected static function getTableName(): string 
     {
-        return lcfirst(str_replace('_', '', ucwords($name, '_')));
+        return 'users';
     }
 }

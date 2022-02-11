@@ -4,7 +4,6 @@ namespace MyProject\Controllers;
 
 use \MyProject\Models\Articles\Article;
 use \MyProject\View\View;
-use \MyProject\Services\Db;
 
 class MainController
 {
@@ -17,12 +16,11 @@ class MainController
     public function __construct()
     {
         $this->view = new View(__DIR__ . "/../../../templates");
-        $this->db = new Db();
     }
 
     public function main(): void
-    {     
-        $articles = $this->db->query('SELECT * FROM `articles`;', [], Article::class);
+    {
+        $articles = Article::findAll();
         $this->view->renderHtml('main/main.php', ['articles' => $articles]);
     }
 
