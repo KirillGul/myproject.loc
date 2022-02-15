@@ -5,11 +5,13 @@ namespace MyProject\Services;
 class Db
 {
     /** @var \PDO */
-    private static $pdo;
+    private $pdo;
 
     private static $instancesCount = 0;
 
-    public function __construct()
+    private static $instance;
+
+    private function __construct()
     {
         self::$instancesCount++;
 
@@ -35,8 +37,12 @@ class Db
         return $sth->fetchAll(\PDO::FETCH_CLASS, $className);
     }
 
-    public static function getInstancesCount(): int
+    public static function getInstance(): self 
     {
-        return self::$instancesCount;
+        if (self::$instance === null) {
+            self::$instance = new self();
+        }
+
+        return self::$instance;
     }
 }
