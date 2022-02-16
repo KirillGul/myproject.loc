@@ -33,13 +33,15 @@ class ArticlesController
         $article = Article::getById($articleId);
         
         if ($article === null) {
-            $this->view->renderHtml('errors/404.php', [], '404');
-            return;
+            $article = new Article;
+
+            $article->setAuthorId(1);
+            $article->setCreatedAt(date('Y-m-d H:i:s', time()));
         }
 
         $article->setName('Новое название статьи');
         $article->setText('Новый текст статьи');
 
-        $article->save();
+        $article->save($articleId);
     }
 }

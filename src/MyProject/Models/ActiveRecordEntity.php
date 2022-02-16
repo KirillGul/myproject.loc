@@ -9,12 +9,14 @@ abstract class ActiveRecordEntity
     /** @var int */
     protected $id;
 
-    /**
-    * @return int
-    */
     public function getId(): int
     {
         return $this->id;
+    }
+
+    public function setId(int $id): void
+    {
+        $this->id = $id;
     }
  
     public function __set(string $name, $value)
@@ -24,8 +26,8 @@ abstract class ActiveRecordEntity
     }
  
     /**
-    * @return static[]
-    */
+     * Возварат всех значений заданной таблицы
+     **/
     public static function findAll(): array
     {
         $db = Db::getInstance();
@@ -33,6 +35,7 @@ abstract class ActiveRecordEntity
     }
 
     /**
+     * Возврат одной строки таблицы по определенном id
      * @param int $id
      * @return static|null
      */
@@ -44,12 +47,15 @@ abstract class ActiveRecordEntity
         return $entities ? $entities[0] : null;
     }
 
-    public function save(): void
+    public function save(int $id): void
     {
         $mappedProperties = $this->mapPropertiesToDbFormat();
+
         if ($this->id !== null) {
             $this->update($mappedProperties);
         } else {
+            $this->setId($id);
+            $mappedProperties = $this->mapPropertiesToDbFormat();
             $this->insert($mappedProperties);
         }
     }
@@ -59,6 +65,7 @@ abstract class ActiveRecordEntity
         $columns2params = [];
         $params2values = [];
         $index = 1;
+        
         foreach ($mappedProperties as $column => $value) {
             $param = ':param' . $index; // :param1
             $columns2params[] = $column . ' = ' . $param; // column1 = :param1
@@ -72,19 +79,17 @@ abstract class ActiveRecordEntity
     
     private function insert(array $mappedProperties): void
     {
+        $value_param = [];
         $columns2params = [];
         $params2values = [];
-        $index = 1;
-        /*foreach ($mappedProperties as $column => $value) {
-            $param = ':param' . $index; // :param1
+        foreach ($mappedProperties as $column => $value) {
+            $value_param[] = ':' . $column; // :param1
             $columns2params[] = $column; // column1
-            $params2values[$param] = $value; // [:param1 => value1]
-            $index++;
+            $params2values[$column] = $value; // [:param1 => value1]
         }
-        $sql = 'INSERT INTO ' . static::getTableName() . ' (' . implode(', ', $columns2params) . ') VALUES (' . $this->id;
-        //$stmt = $pdo->prepare("INSERT INTO planets(name, color) VALUES(:name, :color)");
+        $sql = 'INSERT INTO ' . static::getTableName() . ' (' . implode(', ', $columns2params) . ') VALUES (' . implode(', ', $value_param) . ')';
         $db = Db::getInstance();
-        $db->query($sql, $params2values, static::class);*/
+        $db->query($sql, $params2values, static::class);
     }
 
     private function mapPropertiesToDbFormat(): array
