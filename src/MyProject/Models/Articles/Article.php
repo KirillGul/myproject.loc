@@ -27,12 +27,22 @@ class Article extends ActiveRecordEntity
         return $this->name;
     }
 
+    public function setName(string $name): void
+    {
+        $this->name = $name;
+    }
+
     /**
      * @return string
      */
     public function getText(): string
     {
         return $this->text;
+    }
+
+    public function setText(string $text): void
+    {
+        $this->text = $text;
     }
 
     /**
