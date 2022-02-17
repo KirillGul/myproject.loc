@@ -47,15 +47,14 @@ abstract class ActiveRecordEntity
         return $entities ? $entities[0] : null;
     }
 
-    public function save(int $id): void
+    //public function save(int $id): void
+    public function save(): void
     {
         $mappedProperties = $this->mapPropertiesToDbFormat();
 
         if ($this->id !== null) {
             $this->update($mappedProperties);
         } else {
-            $this->setId($id);
-            $mappedProperties = $this->mapPropertiesToDbFormat();
             $this->insert($mappedProperties);
         }
     }
@@ -76,20 +75,43 @@ abstract class ActiveRecordEntity
         $db = Db::getInstance();
         $db->query($sql, $params2values, static::class);
     }
-    
+
     private function insert(array $mappedProperties): void
     {
-        $value_param = [];
-        $columns2params = [];
+        $filteredProperties = array_filter($mappedProperties);
+
+        $columns = [];
+        $paramsNames = [];
         $params2values = [];
-        foreach ($mappedProperties as $column => $value) {
-            $value_param[] = ':' . $column; // :param1
-            $columns2params[] = $column; // column1
-            $params2values[$column] = $value; // [:param1 => value1]
+        foreach ($filteredProperties as $columnName => $value) {
+            $columns[] = '`' . $columnName. '`';
+            $paramName = ':' . $columnName;
+            $paramsNames[] = $paramName;
+            $params2values[$paramName] = $value;
         }
-        $sql = 'INSERT INTO ' . static::getTableName() . ' (' . implode(', ', $columns2params) . ') VALUES (' . implode(', ', $value_param) . ')';
+
+        $columnsViaSemicolon = implode(', ', $columns);
+        $paramsNamesViaSemicolon = implode(', ', $paramsNames);
+
+        $sql = 'INSERT INTO ' . static::getTableName() . ' (' . $columnsViaSemicolon . ') VALUES (' . $paramsNamesViaSemicolon . ');';
+
         $db = Db::getInstance();
         $db->query($sql, $params2values, static::class);
+        $this->id = $db->getLastInsertId();
+        $this->refresh();
+    }
+
+    private function refresh(): void
+    {
+        $objectFromDb = static::getById($this->id);
+        $reflector = new \ReflectionObject($objectFromDb);
+        $properties = $reflector->getProperties();
+
+        foreach ($properties as $property) {
+            $property->setAccessible(true);
+            $propertyName = $property->getName();
+            $this->$propertyName = $property->getValue($objectFromDb);
+        }
     }
 
     private function mapPropertiesToDbFormat(): array

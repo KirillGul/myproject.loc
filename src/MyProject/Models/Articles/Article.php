@@ -53,14 +53,14 @@ class Article extends ActiveRecordEntity
         return (int) $this->authorId;
     }
 
-    public function setAuthorId(int $authorId): void
+    public function setAuthor(User $author): void
     {
-        $this->authorId = $authorId;
+        $this->authorId = $author->getId();
     }
 
-    public function setCreatedAt(string $time): void
+    public function setCreatedAt(): void
     {
-        $this->createdAt = $time;
+        $this->createdAt = date('c');
     }
 
     /**

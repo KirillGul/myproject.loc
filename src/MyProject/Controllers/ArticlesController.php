@@ -3,6 +3,7 @@
 namespace MyProject\Controllers;
 
 use \MyProject\Models\Articles\Article;
+use \MyProject\Models\Users\User;
 use \MyProject\View\View;
 
 class ArticlesController
@@ -33,15 +34,27 @@ class ArticlesController
         $article = Article::getById($articleId);
         
         if ($article === null) {
-            $article = new Article;
-
-            $article->setAuthorId(1);
-            $article->setCreatedAt(date('Y-m-d H:i:s', time()));
+            $this->view->renderHtml('errors/404.php', [], '404');
+            return;
         }
 
         $article->setName('Новое название статьи');
         $article->setText('Новый текст статьи');
 
-        $article->save($articleId);
+        $article->save();
+    }
+
+    public function add(): void
+    {
+        $author = User::getById(1); //полльзватель с id=1
+
+        $article = new Article();
+        $article->setAuthor($author);
+        $article->setName('Новое название статьи');
+        $article->setText('Новый текст статьи');
+
+        $article->save();
+
+        var_dump($article);
     }
 }
