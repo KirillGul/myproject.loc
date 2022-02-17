@@ -15,7 +15,7 @@ class Db
     /**
      * Создаёт объет класса PDO и подключение к базе данных
      */
-    private function __construct()
+    public function __construct()
     {
         $dbOptions = (require __DIR__ . '/../../settings.php')['db'];
 
