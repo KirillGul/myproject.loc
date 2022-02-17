@@ -2,19 +2,21 @@
 
 namespace MyProject\Services;
 
+/**
+ * Класс для работы с базой данных
+ */
 class Db
 {
-    /** @var \PDO */
+    /**
+     *  @var \PDO Объект класса PDO
+     */
     private $pdo;
 
-    private static $instancesCount = 0;
-
-    private static $instance;
-
+    /**
+     * Создаёт объет класса PDO и подключение к базе данных
+     */
     private function __construct()
     {
-        self::$instancesCount++;
-
         $dbOptions = (require __DIR__ . '/../../settings.php')['db'];
 
         $this->pdo = new \PDO(
@@ -25,6 +27,12 @@ class Db
         $this->pdo->exec('SET NAMES UTF8');
     }
 
+    /**
+     * Обработка запроса к БД
+     * @param string $sql Строка запроса
+     * @param array $params Подготовленные параметры для запроса $sql
+     * @param string $className Какой класс будет создан для каждого полученной строки запросы из БД (по умол.stdClass)
+     */
     public function query(string $sql, $params = [], string $className = 'stdClass'): ?array
     {
         $sth = $this->pdo->prepare($sql);
@@ -34,20 +42,6 @@ class Db
             return null;
         }
 
-        return $sth->fetchAll(\PDO::FETCH_CLASS, $className);
-    }
-
-    public static function getInstance(): self 
-    {
-        if (self::$instance === null) {
-            self::$instance = new self();
-        }
-
-        return self::$instance;
-    }
-
-    public function getLastInsertId(): int
-    {
-        return (int) $this->pdo->lastInsertId();
+        return $sth->fetchAll(\PDO::FETCH_CLASS, $className); //возвращается массив объектов указанного класса
     }
 }

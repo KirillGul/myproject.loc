@@ -4,14 +4,24 @@ namespace MyProject\View;
 
 class View
 {
-    private $templatesPath;
+    /**
+     * Путь к папке с шаблонами
+     */
+    private string $templatesPath;
 
     public function __construct(string $templatesPath)
     {
         $this->templatesPath = $templatesPath;
     }
 
-    public function renderHtml(string $templateName, array $vars = [], int $code = 200)
+    /**
+     * Отрисовка шаблона ($templateName) и данных ($vars) на экране
+     * 
+     * @param string $templateName Имя шаблона
+     * @param array $vars Массив переменных для шаблона
+     * @param int $code Код ответа сервера
+     */
+    public function renderHtml(string $templateName, array $vars = [], int $code = 200): void
     {
         extract($vars); //преобразует массив в переменные
 

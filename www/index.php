@@ -23,8 +23,8 @@ if (!$isRouteFound) {
 
 unset($matches[0]);
 
-$controllerName = $controllerAndAction[0];
-$actionName = $controllerAndAction[1];
+$controllerName = $controllerAndAction[0]; //узнаем имя контроллера
+$actionName = $controllerAndAction[1]; //узнаем имя действия
 
-$controller = new $controllerName();
-$controller->$actionName(...$matches);
+$controller = new $controllerName(); //создаем объект контроллера
+$controller->$actionName(...$matches); //запускаем дейсвие и передаем аргументы
