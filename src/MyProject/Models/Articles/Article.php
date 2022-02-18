@@ -21,28 +21,33 @@ class Article
     /** @var string */
     private $createdAt;
 
-    public function getId()
+    /** @return int $id */
+    public function getId(): int
     {
         return $this->id;
     }
 
-    public function getName()
+    /** @return string $name */
+    public function getName(): string
     {
         return $this->name;
     }
 
-    public function getText()
+    /** @return string $text */
+    public function getText(): string
     {
         return $this->text;
     }
 
-    public function __set($name, $value)
+    /**@property integer $name */
+    public function __set(string $name, $value): void
     {
         $camelCasename = $this->underscoreToCamelCase($name);
         $this->$camelCasename = $value;
     }
 
-    private function underscoreToCamelCase(string $source)
+    /** Преобразование подчеркивания перед словом в CamalCase */
+    private function underscoreToCamelCase(string $source): string
     {
         return lcfirst(str_replace('_', '', ucwords($source, '_')));
     }

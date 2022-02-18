@@ -46,7 +46,6 @@ class MainController
 
     /**
      * Функция приветствия
-     * 
      * @param string $name ИмяПользователя
      */
     public function sayHello(string $name): void
