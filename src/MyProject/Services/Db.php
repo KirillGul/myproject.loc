@@ -45,7 +45,7 @@ class Db
             return null;
         }
 
-        return $sth->fetchAll();
-        //return $sth->fetchAll(\PDO::FETCH_CLASS, $className);
+        //return $sth->fetchAll();
+        return $sth->fetchAll(\PDO::FETCH_CLASS, $className);
     }
 }
