@@ -8,7 +8,8 @@ namespace MyProject\Services;
 class Db
 {
     /**
-     *  @var \PDO Объект класса PDO
+     * Объект класса PDO
+     *  @var \PDO
      */
     private $pdo;
 
@@ -32,6 +33,8 @@ class Db
      * @param string $sql Строка запроса
      * @param array $params Подготовленные параметры для запроса $sql
      * @param string $className Какой класс будет создан для каждого полученной строки запросы из БД (по умол.stdClass)
+     * 
+     * @return array Возвращается массив объектов переданного класса
      */
     public function query(string $sql, $params = [], string $className = 'stdClass'): ?array
     {
@@ -42,6 +45,7 @@ class Db
             return null;
         }
 
-        return $sth->fetchAll(\PDO::FETCH_CLASS, $className); //возвращается массив объектов указанного класса
+        return $sth->fetchAll();
+        //return $sth->fetchAll(\PDO::FETCH_CLASS, $className);
     }
 }

@@ -1,5 +1,5 @@
 <?php include __DIR__ . '/../header.php'; ?>
-    <h1><?= $article->getName() ?? '' ?></h1>
-    <p><?= $article->getText() ?? '' ?></p>
-    <p>Автор: <?= $article->getAuthor()->getNickname() ?></p>
+    <h1><?= $article['name'] ?></h1>
+    <p><?= $article['text'] ?></p>
+    <p><?= $nickname['nickname'] ?></p>
 <?php include __DIR__ . '/../footer.php'; ?>

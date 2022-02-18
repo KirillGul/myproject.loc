@@ -2,59 +2,57 @@
 
 namespace MyProject\Controllers;
 
-use \MyProject\Models\Articles\Article;
-use \MyProject\Models\Users\User;
-use \MyProject\View\View;
+use MyProject\View\View;
+use MyProject\Services\Db;
 
+/**
+ * Класс главной страницы сайта
+ */
 class ArticlesController
 {
-    /** @var View */
-    private $view;
+    /**
+     * Содержит объект класса View
+     */
+    private View $view;
 
+    /**
+     * Содержит объект класса Db
+     */
+    private Db $db;
+
+    /**
+     * Создание объекта View и передача пути к папке с шаблонами
+     */
     public function __construct()
     {
-        $this->view = new View(__DIR__ . '/../../../templates');
+        $this->view = new View(__DIR__ . '/../../../templates/');
+        $this->db = new Db;
     }
 
-    public function view(int $articleId): void
+    /**
+     * Действие для вывода одной статьи
+     */
+    public function view(int $id)
     {
-        $article = Article::getById($articleId);
-       
-        if ($article === null) {
-            $this->view->renderHtml('errors/404.php', [], '404');
+        $result = $this->db->query(
+            'SELECT * FROM `articles` WHERE `id` = :id;',
+            ['id' => $id]
+        );
+
+        if (empty($result)) {
+            $this->view->renderHtml('errors/404.php', [], 404);
             return;
         }
 
-        $this->view->renderHtml('articles/view.php', ['article' => $article]);
-    }
+        $authorId = $result[0]['author_id'];
+        $userNickname = $this->db->query(
+            'SELECT nickname FROM `users` WHERE `id` = :id;',
+            ['id' => $authorId]
+        );
+        //var_dump($userNickname);
 
-    public function edit(int $articleId): void
-    {
-        /** @var Article $article */
-        $article = Article::getById($articleId);
-        
-        if ($article === null) {
-            $this->view->renderHtml('errors/404.php', [], '404');
-            return;
-        }
-
-        $article->setName('Новое название статьи');
-        $article->setText('Новый текст статьи');
-
-        $article->save();
-    }
-
-    public function add(): void
-    {
-        $author = User::getById(1); //полльзватель с id=1
-
-        $article = new Article();
-        $article->setAuthor($author);
-        $article->setName('Новое название статьи');
-        $article->setText('Новый текст статьи');
-
-        $article->save();
-
-        var_dump($article);
+        $this->view->renderHtml('articles/view.php', [
+            'article' => $result[0], 'nickname' => $userNickname[0]
+        ]);
     }
 }

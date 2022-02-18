@@ -35,12 +35,10 @@ class MainController
     public function main()
     {
         $articles = $this->db->query('SELECT * FROM `articles`;');
-        var_dump($articles);
-        /*
+        
         $this->view->renderHtml('main/main.php', [
             'articles' => $articles,
         ]);
-        */
     }
 
     /**
