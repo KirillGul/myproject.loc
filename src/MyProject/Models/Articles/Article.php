@@ -2,29 +2,29 @@
 
 namespace MyProject\Models\Articles;
 
+use MyProject\Models\ActiveRecordEntity;
 use MyProject\Models\Users\User;
 
-class Article
+class Article extends ActiveRecordEntity
 {
-    /** @var int */
-    private $id;
+    /** @var string */
+    protected $name;
 
     /** @var string */
-    private $name;
-
-    /** @var string */
-    private $text;
+    protected $text;
 
     /** @var int */
-    private $authorId;
+    protected $authorId;
 
     /** @var string */
-    private $createdAt;
+    protected $createdAt;
 
-    /** @return int $id */
-    public function getId(): int
+    /** @var string */
+    protected $authorName;
+
+    private function __construct()
     {
-        return $this->id;
+        $this->setAuthorName();
     }
 
     /** @return string $name */
@@ -39,16 +39,27 @@ class Article
         return $this->text;
     }
 
-    /**@property integer $name */
-    public function __set(string $name, $value): void
+    /** @return int $authorId */
+    public function getAuthorId(): int
     {
-        $camelCasename = $this->underscoreToCamelCase($name);
-        $this->$camelCasename = $value;
+        return $this->authorId;
     }
 
-    /** Преобразование подчеркивания перед словом в CamalCase */
-    private function underscoreToCamelCase(string $source): string
+    /** @return string */
+    public function getAuthorName(): string
     {
-        return lcfirst(str_replace('_', '', ucwords($source, '_')));
+        return $this->authorName;
+    }
+
+    /** @return void */
+    public function setAuthorName(): void
+    {
+        $this->authorName = User::getById($this->authorId)->getNickname();
+    }
+
+    /**Отсюда возвращается название таблицы для запроса */
+    protected static function getTableName(): string
+    {
+        return 'articles';
     }
 }

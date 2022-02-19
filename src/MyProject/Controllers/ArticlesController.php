@@ -2,8 +2,9 @@
 
 namespace MyProject\Controllers;
 
+use MyProject\Models\Articles\Article;
+use MyProject\Models\Users\User;
 use MyProject\View\View;
-use MyProject\Services\Db;
 
 /**
  * Класс главной страницы сайта
@@ -16,17 +17,11 @@ class ArticlesController
     private View $view;
 
     /**
-     * Содержит объект класса Db
-     */
-    private Db $db;
-
-    /**
      * Создание объекта View и передача пути к папке с шаблонами
      */
     public function __construct()
     {
         $this->view = new View(__DIR__ . '/../../../templates/');
-        $this->db = new Db;
     }
 
     /**
@@ -34,25 +29,20 @@ class ArticlesController
      */
     public function view(int $id)
     {
-        $result = $this->db->query(
-            'SELECT * FROM `articles` WHERE `id` = :id;',
-            ['id' => $id]
-        );
+        $article = Article::getById($id);
 
-        if (empty($result)) {
+        if (empty($article)) {
             $this->view->renderHtml('errors/404.php', [], 404);
             return;
         }
-
-        $authorId = $result[0]['author_id'];
-        $userNickname = $this->db->query(
-            'SELECT nickname FROM `users` WHERE `id` = :id;',
-            ['id' => $authorId]
-        );
-        //var_dump($userNickname);
-
+        
+        //$articleAuthor = User::getById($article->getAuthorId());
+        //var_dump($result);
+        
         $this->view->renderHtml('articles/view.php', [
-            'article' => $result[0], 'nickname' => $userNickname[0]
+            'article' => $article
         ]);
+
+        //var_dump($article);
     }
 }

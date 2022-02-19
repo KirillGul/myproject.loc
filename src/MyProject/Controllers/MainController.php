@@ -4,7 +4,6 @@ namespace MyProject\Controllers;
 
 use MyProject\Models\Articles\Article;
 use MyProject\View\View;
-use MyProject\Services\Db;
 
 /**
  * Класс главной страницы сайта
@@ -17,17 +16,11 @@ class MainController
     private View $view;
 
     /**
-     * Содержит объект класса Db
-     */
-    private Db $db;
-
-    /**
      * Создание объекта View и передача пути к папке с шаблонами
      */
     public function __construct()
     {
         $this->view = new View(__DIR__ . '/../../../templates/');
-        $this->db = new Db;
     }
 
     /**
@@ -35,10 +28,14 @@ class MainController
      */
     public function main()
     {
-        $articles = $this->db->query('SELECT * FROM `articles`;', [], Article::class);
+        //Простой ORM
+        //$articles = $this->db->query('SELECT * FROM `articles`;', [], Article::class);
+
+        //Active Record
+        $articles = Article::findAll();
 
         //var_dump($articles);
-        
+
         $this->view->renderHtml('main/main.php', [
             'articles' => $articles,
         ]);
