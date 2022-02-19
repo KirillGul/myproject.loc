@@ -28,7 +28,7 @@ abstract class ActiveRecordEntity
     */
     public static function findAll(): array
     {
-        $db = new Db;
+        $db = Db::getInstances();
         return $db->query('SELECT * FROM `' . static::getTableName() . '`;', [], static::class);
     }
 
@@ -38,10 +38,11 @@ abstract class ActiveRecordEntity
      */
     public static function getById(int $id): ?self
     {
-        $db = new Db;
+        $db = Db::getInstances();
         $entities = $db->query('SELECT * FROM `' . static::getTableName() . '` WHERE `id` = :id;', ['id' => $id], static::class);
         //var_dump($entities);
-        return $entities ? $entities[0] : null;
+
+        return $entities ? $entities[0] : null;       
     }
 
     /** Преобразование подчеркивания перед словом в CamalCase */

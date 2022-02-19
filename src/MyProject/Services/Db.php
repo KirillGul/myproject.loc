@@ -14,9 +14,15 @@ class Db
     private $pdo;
 
     /**
-     * Создаёт объет класса PDO и подключение к базе данных
+     * Объект класса PDO
+     *  @var \PDO
      */
-    public function __construct()
+    private static $instance;
+
+    /**
+     * Создаёт объект класса PDO и подключение к базе данных
+     */
+    private function __construct()
     {
         $dbOptions = (require __DIR__ . '/../../settings.php')['db'];
 
@@ -26,6 +32,18 @@ class Db
             $dbOptions['password']
         );
         $this->pdo->exec('SET NAMES UTF8');
+    }
+
+    /**
+     * Проверяет создание объекта класса PDO и в случае отсутсвия подключется к базе данных
+     */
+    public static function getInstances(): self
+    {
+        if (self::$instance === null) {
+            self::$instance = new self();
+        }
+
+        return self::$instance;
     }
 
     /**
