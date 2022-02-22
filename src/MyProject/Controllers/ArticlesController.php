@@ -3,7 +3,6 @@
 namespace MyProject\Controllers;
 
 use MyProject\Models\Articles\Article;
-use MyProject\Models\Users\User;
 use MyProject\View\View;
 
 /**
@@ -30,7 +29,21 @@ class ArticlesController
     public function view(int $id)
     {
         $article = Article::getById($id);
+/*
+        $reflector = new \ReflectionObject($article);
+        $properties = $reflector->getProperties();
+        var_dump($properties);
 
+        $propertiesNames = [];
+        foreach ($properties as $property) {
+            $propertiesNames[] = $property->getName();
+        }
+        var_dump($propertiesNames);
+
+        $methods = $reflector->getMethods();
+        var_dump($methods);
+        return;
+*/
         if (empty($article)) {
             $this->view->renderHtml('errors/404.php', [], 404);
             return;
@@ -39,6 +52,22 @@ class ArticlesController
         //$articleAuthor = User::getById($article->getAuthorId());
         //var_dump($result);
         
+        $this->view->renderHtml('articles/view.php', [
+            'article' => $article
+        ]);
+
+        //var_dump($article);
+    }
+
+    public function edit(int $id)
+    {
+        $article = Article::getById($id);
+
+        if (empty($article)) {
+            $this->view->renderHtml('errors/404.php', [], 404);
+            return;
+        }
+             
         $this->view->renderHtml('articles/view.php', [
             'article' => $article
         ]);
